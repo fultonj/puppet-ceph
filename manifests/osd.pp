@@ -41,17 +41,24 @@
 # [*exec_timeout*] The default exec resource timeout, in seconds
 #   Optional. Defaults to $::ceph::params::exec_timeout
 #
+# [*fsid*] The ceph cluster FSID
+#   Optional. Defaults to $::ceph::profile::params::fsid
+#
 define ceph::osd (
   $ensure = present,
   $journal = undef,
   $cluster = undef,
   $exec_timeout = $::ceph::params::exec_timeout,
+  $fsid = $::ceph::profile::params::fsid,
   ) {
 
     $data = $name
 
     if $cluster {
       $cluster_option = "--cluster ${cluster}"
+      if $fsid {
+        $cluster_option = "--cluster ${cluster} --fsid ${fsid}"
+      }
       $cluster_name = $cluster
     } else {
       $cluster_name = 'ceph'
